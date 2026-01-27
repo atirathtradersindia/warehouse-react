@@ -118,11 +118,24 @@ export default function Login() {
 
       console.log("✅ Login successful, user session:", sessionUser);
 
+      // ✅ IMPORTANT: Store user data in multiple places for header access
+      // 1. Store in localStorage (for persistence)
+      localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+      
+      // 2. Store in sessionStorage (for session-only)
+      sessionStorage.setItem('currentUser', JSON.stringify(sessionUser));
+      
+      // 3. Set on window object (for immediate access)
+      window.currentUser = sessionUser;
+      
+      // 4. Store user ID separately for notifications
+      localStorage.setItem('currentUserId', userDoc.id);
+      
+      // 5. Trigger user update event for header to refresh
+      window.dispatchEvent(new Event('userUpdated'));
+      
       // ✅ LOGIN USER USING CONTEXT FUNCTION
       login(sessionUser);
-
-      // ✅ Also store user ID separately for notifications
-      localStorage.setItem('currentUserId', userDoc.id);
 
       setMessage("Login successful! Redirecting...");
       
@@ -272,11 +285,15 @@ export default function Login() {
       
       console.log("✅ Demo login successful:", sessionUser);
       
+      // ✅ IMPORTANT: Store demo user data in same way
+      localStorage.setItem('currentUser', JSON.stringify(sessionUser));
+      sessionStorage.setItem('currentUser', JSON.stringify(sessionUser));
+      window.currentUser = sessionUser;
+      localStorage.setItem('currentUserId', sessionUser.id);
+      window.dispatchEvent(new Event('userUpdated'));
+      
       // ✅ LOGIN USER USING CONTEXT FUNCTION
       login(sessionUser);
-      
-      // Also store user ID separately for notifications
-      localStorage.setItem('currentUserId', sessionUser.id);
       
       setMessage("Demo login successful! Redirecting...");
       
